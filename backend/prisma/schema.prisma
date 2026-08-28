@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum PlateType {
+  ORDINARY
+  AIRCON
+  BRT
+}
+
+enum RouteStatus {
+  MOVING
+  DELAYED
+  LAST
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  username     String    @unique
+  email        String    @unique
+  passwordHash String
+  displayName  String?
+  avatarUrl    String?   @db.Text
+  role         Role      @default(USER)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  refreshTokens RefreshToken[]
+  favorites     Favorite[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("refresh_tokens")
+}
+
+/// Domain: ระบบติดตามรถเมล์ (bus tracking) — Core Business Logic ของโปรเจกต์นี้
+model Route {
+  id        Int       @id @default(autoincrement())
+  number    String    @unique
+  name      String
+  plateType PlateType @default(ORDINARY)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  stops     Stop[]
+  location  RouteLocation?
+  favorites Favorite[]
+
+  @@map("routes")
+}
+
+model Stop {
+  id       Int    @id @default(autoincrement())
+  routeId  Int
+  route    Route  @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  name     String
+  sequence Int
+  lat      Float?
+  lng      Float?
+
+  @@unique([routeId, sequence])
+  @@map("stops")
+}
+
+model RouteLocation {
+  id         Int         @id @default(autoincrement())
+  routeId    Int         @unique
+  route      Route       @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  lat        Float
+  lng        Float
+  nextStopId Int?
+  status     RouteStatus @default(MOVING)
+  updatedAt  DateTime    @updatedAt
+
+  @@map("route_locations")
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  routeId   Int
+  route     Route    @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, routeId])
+  @@map("favorites")
+}

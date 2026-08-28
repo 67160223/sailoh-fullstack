@@ -1,0 +1,63 @@
+.route-plate {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--plate-bg);
+  color: var(--plate-fg);
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  box-shadow:
+    0 2px 0 rgba(0,0,0,0.35),
+    inset 0 0 0 1px rgba(255,255,255,0.15);
+  flex-shrink: 0;
+}
+
+.route-plate--md { width: 64px; height: 44px; font-size: 20px; }
+.route-plate--lg { width: 92px; height: 64px; font-size: 30px; }
+.route-plate--sm { width: 46px; height: 32px; font-size: 14px; border-radius: 6px; }
+
+.route-plate__rivet {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.25);
+  top: 4px;
+}
+.route-plate--sm .route-plate__rivet { display: none; }
+.route-plate__rivet--tl { left: 5px; }
+.route-plate__rivet--tr { right: 5px; }
+
+.route-plate__number {
+  letter-spacing: -0.02em;
+}
+
+.route-plate__status {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.route-plate__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--dot);
+  box-shadow: 0 0 0 0 var(--dot);
+  animation: plate-pulse 1.8s ease-out infinite;
+}
+
+@keyframes plate-pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--dot) 55%, transparent); }
+  70% { box-shadow: 0 0 0 6px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}

@@ -1,0 +1,56 @@
+.settings__back {
+  color: var(--text-muted);
+  font-size: 13px;
+  display: inline-block;
+  margin-bottom: 14px;
+}
+
+.settings__header h1 {
+  font-size: 22px;
+  margin-top: 4px;
+}
+
+.settings__card {
+  margin-top: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px 16px;
+}
+
+.settings__card-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.settings__card-desc {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-top: 4px;
+  line-height: 1.6;
+}
+
+.settings__theme-toggle {
+  margin-top: 16px;
+  display: flex;
+  gap: 6px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 4px;
+}
+
+.settings__theme-toggle button {
+  flex: 1;
+  padding: 11px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-radius: 10px;
+}
+
+.settings__theme-toggle button.is-active {
+  background: var(--amber);
+  color: #14171c;
+}

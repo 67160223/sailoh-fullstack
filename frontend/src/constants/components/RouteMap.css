@@ -1,0 +1,44 @@
+.route-map {
+  width: 100%;
+  border-radius: var(--radius-md, 14px);
+  overflow: hidden;
+  border: 1px solid var(--border, #2f3742);
+}
+
+.route-map--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  background: var(--surface, #1c2128);
+  color: var(--text-muted, #8a93a3);
+  font-size: 13px;
+}
+
+/* leaflet ใส่ z-index สูงมาให้ default — กดไว้ไม่ให้ทับ TopBar/BottomNav ที่ sticky/fixed อยู่ */
+.route-map .leaflet-pane {
+  z-index: 1;
+}
+.route-map .leaflet-top,
+.route-map .leaflet-bottom {
+  z-index: 2;
+}
+
+.route-map .leaflet-control-attribution {
+  background: rgba(20, 23, 28, 0.75) !important;
+  color: var(--text-muted, #8a93a3) !important;
+  font-size: 9px !important;
+}
+.route-map .leaflet-control-attribution a {
+  color: var(--text-muted, #8a93a3) !important;
+}
+
+.route-map .leaflet-control-zoom a {
+  background: var(--surface, #1c2128) !important;
+  color: var(--text, #edeff2) !important;
+  border-color: var(--border, #2f3742) !important;
+}
+.route-map .leaflet-control-zoom a:hover {
+  background: var(--surface-raised, #242a33) !important;
+}

@@ -1,0 +1,83 @@
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.top-bar__brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.top-bar__right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.top-bar__settings-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease;
+}
+
+.top-bar__settings-btn:hover {
+  background: var(--surface-raised);
+}
+
+.top-bar__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--amber);
+  color: #14171c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: box-shadow 0.15s ease;
+}
+
+.top-bar__avatar:hover {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--amber) 30%, transparent);
+}
+
+.top-bar__avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.top-bar__login-btn {
+  font-size: 13px;
+  font-weight: 700;
+  color: #14171c;
+  background: var(--amber);
+  padding: 8px 16px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.top-bar__login-btn:hover {
+  filter: brightness(1.08);
+}

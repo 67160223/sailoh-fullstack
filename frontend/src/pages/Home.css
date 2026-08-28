@@ -1,0 +1,87 @@
+.home__header {
+  margin-bottom: 18px;
+}
+
+.home__header h1 {
+  font-size: 26px;
+  margin: 6px 0 6px;
+  line-height: 1.25;
+}
+
+.home__sub {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.home__section {
+  margin-top: 28px;
+}
+
+.home__section .eyebrow {
+  margin-bottom: 10px;
+  display: block;
+}
+
+.home__chip-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.home__chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.home__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.home__list-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.home__list-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+  color: var(--text-muted);
+  min-width: 0;
+}
+
+.home__list-text strong {
+  color: var(--text);
+  font-size: 15px;
+}
+
+.home__list-text span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home__list-status {
+  font-size: 12px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  text-align: right;
+}
