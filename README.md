@@ -15,7 +15,7 @@ sailoh-fullstack/
 
 ## ความคืบหน้าโครงการ (Self-Assessment)
 
-**ภาพรวม: ~80% เสร็จสมบูรณ์** _(ตัวเลขประมาณ — ปรับตามความเห็นจริงของทีมก่อนรายงาน)_
+**ภาพรวม: ~75% เสร็จสมบูรณ์** _(ตัวเลขประมาณ — ปรับตามความเห็นจริงของทีมก่อนรายงาน)_
 
 | หมวด | ความคืบหน้า | หมายเหตุ |
 |---|---|---|
@@ -23,7 +23,7 @@ sailoh-fullstack/
 | User Management (CRUD, pagination, check-username) | 100% | ครบทุก endpoint |
 | Core Business Logic (สาย/ป้าย/ตำแหน่งรถ/ETA/บันทึกสาย) | ~90% | ขาดแค่เชื่อม GPS จริง |
 | Admin Dashboard | 100% | จัดการผู้ใช้ครบ |
-| Frontend เชื่อมต่อ API จริง | ~90% | มีแผนที่จริง, dark/light mode, เปลี่ยนรูปโปรไฟล์ |
+| Frontend เชื่อมต่อ API จริง | ~20% | มีแผนที่จริง 
 | Docker (รันครบทั้งระบบด้วยคำสั่งเดียว) | 100% | รันได้แค่ local เท่านั้น |
 | Security เสริม (rate limiting, automated tests) | ~20% | ยังไม่ได้ทำ |
 | Real-time push (WebSocket) | 0% | ตอนนี้ frontend poll ข้อมูลเป็นช่วง ๆ แทน |
