@@ -13,6 +13,28 @@ sailoh-fullstack/
 └── frontend/            ← เดิมคือ final-bus-tracker (React + Vite)
 ```
 
+## ความคืบหน้าโครงการ (Self-Assessment)
+
+**ภาพรวม: ~80% เสร็จสมบูรณ์** _(ตัวเลขประมาณ — ปรับตามความเห็นจริงของทีมก่อนรายงาน)_
+
+| หมวด | ความคืบหน้า | หมายเหตุ |
+|---|---|---|
+| Authentication (register/login/refresh/logout/เปลี่ยน-ลืมรหัสผ่าน) | 100% | ครบทุก endpoint |
+| User Management (CRUD, pagination, check-username) | 100% | ครบทุก endpoint |
+| Core Business Logic (สาย/ป้าย/ตำแหน่งรถ/ETA/บันทึกสาย) | ~90% | ขาดแค่เชื่อม GPS จริง |
+| Admin Dashboard | 100% | จัดการผู้ใช้ครบ |
+| Frontend เชื่อมต่อ API จริง | ~90% | มีแผนที่จริง, dark/light mode, เปลี่ยนรูปโปรไฟล์ |
+| Docker (รันครบทั้งระบบด้วยคำสั่งเดียว) | 100% | รันได้แค่ local เท่านั้น |
+| Security เสริม (rate limiting, automated tests) | ~20% | ยังไม่ได้ทำ |
+| Real-time push (WebSocket) | 0% | ตอนนี้ frontend poll ข้อมูลเป็นช่วง ๆ แทน |
+
+**สิ่งที่ยังไม่เสร็จ (ทำต่อได้ถ้ามีเวลา):**
+- ตำแหน่งรถยังเป็นข้อมูลที่ admin กรอกเองผ่าน API ยังไม่เชื่อมกับอุปกรณ์ GPS จริงบนรถเมล์
+- ยังไม่มี automated tests (unit/integration)
+- ยังไม่ได้ deploy ขึ้น production จริง — รันได้แค่บนเครื่อง local ผ่าน Docker Compose
+- ยังไม่มี rate limiting ป้องกัน brute-force ที่ `/auth/login` และ `/auth/register`
+- ยังไม่มีระบบส่งอีเมลจริงสำหรับ `forgot-password` (ตอนนี้คืน `resetToken` ตรงใน response เพื่อทดสอบ)
+
 ## วิธีรันแบบเร็วที่สุด (1 คำสั่ง ได้ครบทุกอย่าง)
 
 ```bash
