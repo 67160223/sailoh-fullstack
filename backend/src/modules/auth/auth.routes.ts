@@ -2,6 +2,7 @@ import { Router } from 'express'
 import * as controller from './auth.controller'
 import { validate } from '../../middleware/validate.middleware'
 import { requireAuth } from '../../middleware/auth.middleware'
+import { loginLimiter, registerLimiter } from '../../middleware/rateLimiter'
 import {
   registerSchema,
   loginSchema,
@@ -14,8 +15,8 @@ import {
 
 const router = Router()
 
-router.post('/register', validate(registerSchema), controller.register)
-router.post('/login', validate(loginSchema), controller.login)
+router.post('/register', registerLimiter, validate(registerSchema), controller.register)
+router.post('/login', loginLimiter, validate(loginSchema), controller.login)
 router.post('/refresh', validate(refreshSchema), controller.refresh)
 router.post('/logout', validate(logoutSchema), controller.logout)
 router.post('/change-password', requireAuth, validate(changePasswordSchema), controller.changePassword)
