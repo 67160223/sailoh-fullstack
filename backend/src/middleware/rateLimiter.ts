@@ -8,7 +8,7 @@ export const loginLimiter = rateLimit({
   max: 5,
   standardHeaders: true, // ส่ง header RateLimit-* กลับไปให้ client เช็คได้ว่าเหลือกี่ครั้ง
   legacyHeaders: false,
-  handler: (req, res) => {
+  handler: (_req, res) => {
     const body: ApiErrorBody = {
       success: false,
       message: 'พยายามเข้าสู่ระบบบ่อยเกินไป กรุณารอ 15 นาทีแล้วลองใหม่',
@@ -24,7 +24,7 @@ export const registerLimiter = rateLimit({
   max: 10,
   standardHeaders: true,
   legacyHeaders: false,
-  handler: (req, res) => {
+  handler: (_req, res) => {
     const body: ApiErrorBody = {
       success: false,
       message: 'สร้างบัญชีบ่อยเกินไป กรุณารอ 1 ชั่วโมงแล้วลองใหม่',
