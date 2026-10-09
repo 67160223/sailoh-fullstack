@@ -23,6 +23,10 @@ export const env = {
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean),
+
+  // จำลองตำแหน่งรถเมล์ไล่ตามป้ายจริงอัตโนมัติ (ดู src/jobs/busSimulator.ts) — เปิดเป็นค่าเริ่มต้น
+  // ปิดได้ด้วย ENABLE_BUS_SIMULATOR=false ใน .env เช่นตอน deploy จริงที่มี GPS จริงส่งเข้ามาแทน
+  enableBusSimulator: process.env.ENABLE_BUS_SIMULATOR !== 'false',
 }
 
 export const isProduction = env.nodeEnv === 'production'

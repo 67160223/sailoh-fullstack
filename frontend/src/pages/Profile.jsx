@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
 import { resizeImageToDataUrl } from '../lib/resizeImage'
 import './Auth.css'
 import './Profile.css'
+import './Settings.css'
 
 const ROLE_LABEL = { ADMIN: 'ผู้ดูแลระบบ', USER: 'ผู้ใช้ทั่วไป' }
 
@@ -14,6 +16,7 @@ function formatDate(iso) {
 
 export default function Profile() {
   const { authFetch, updateStoredUser, changePassword, logout } = useAuth()
+  const { theme, setTheme } = useTheme()
   const navigate = useNavigate()
 
   const [profile, setProfile] = useState(null)
@@ -191,6 +194,10 @@ export default function Profile() {
             {avatarErr && <p className="auth-error">{avatarErr}</p>}
           </section>
 
+          <Link to="/wallet" className="profile__wallet-link">
+            👛 กระเป๋าเงินในแอป — เติมเงิน / ซื้อตั๋วอิเล็กทรอนิกส์
+          </Link>
+
           <section className="profile__card">
             <div className="profile__readonly-row">
               <span>ชื่อผู้ใช้</span>
@@ -277,6 +284,32 @@ export default function Profile() {
           </form>
 
           <button className="profile__logout" onClick={handleLogout}>ออกจากระบบ</button>
+
+          <section className="settings__card">
+            <p className="settings__card-title">ธีมของแอป</p>
+            <p className="settings__card-desc">เลือกโหมดสว่างหรือมืด — จำค่าไว้ในเครื่องนี้ ไม่ต้องตั้งใหม่ทุกครั้ง</p>
+
+            <div className="settings__theme-toggle" role="radiogroup" aria-label="เลือกธีม">
+              <button
+                type="button"
+                role="radio"
+                aria-checked={theme === 'dark'}
+                className={theme === 'dark' ? 'is-active' : ''}
+                onClick={() => setTheme('dark')}
+              >
+                🌙 มืด
+              </button>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={theme === 'light'}
+                className={theme === 'light' ? 'is-active' : ''}
+                onClick={() => setTheme('light')}
+              >
+                ☀️ สว่าง
+              </button>
+            </div>
+          </section>
         </>
       )}
     </div>

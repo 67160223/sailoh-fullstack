@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import RoutePlate from '../constants/components/RoutePlate'
+import RoutePlate from '../components/RoutePlate'
 import { useFavorites } from '../context/FavoritesContext'
 import './Saved.css'
 

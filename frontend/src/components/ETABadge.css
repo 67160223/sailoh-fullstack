@@ -1,0 +1,25 @@
+.eta-badge {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: var(--font-mono);
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+}
+
+.eta-badge__value {
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.eta-badge__unit {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.eta-badge--green .eta-badge__value { color: var(--green); }
+.eta-badge--amber .eta-badge__value { color: var(--amber); }
+.eta-badge--red .eta-badge__value { color: var(--red); }

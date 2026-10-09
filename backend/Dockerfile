@@ -31,6 +31,7 @@ COPY prisma ./prisma
 RUN npm install --omit=dev
 
 COPY --from=builder /app/dist ./dist
+COPY scripts ./scripts
 
 EXPOSE 4000
 

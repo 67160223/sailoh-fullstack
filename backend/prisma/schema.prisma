@@ -24,6 +24,26 @@ enum RouteStatus {
   LAST
 }
 
+enum ReportStatus {
+  ARRIVED    // รถมาถึงป้ายนี้แล้ว
+  DELAYED    // รถล่าช้า
+  CROWDED    // รถแน่นมาก
+  ON_TIME    // มาตามเวลา
+  NOT_COMING // รถไม่มา/ยกเลิกรอบนี้
+}
+
+enum WalletTxType {
+  TOPUP            // เติมเงิน (เดโม ไม่มี payment gateway จริง)
+  TICKET_PURCHASE  // ซื้อตั๋วอิเล็กทรอนิกส์
+  REFUND           // คืนเงินตั๋วที่ยกเลิก
+}
+
+enum TicketStatus {
+  UNUSED  // ยังไม่ได้ใช้ขึ้นรถ
+  USED    // ใช้ขึ้นรถไปแล้ว (สแกนแล้ว)
+  EXPIRED // หมดอายุไม่ได้ใช้ภายในเวลาที่กำหนด
+}
+
 model User {
   id           Int       @id @default(autoincrement())
   username     String    @unique
@@ -37,6 +57,9 @@ model User {
 
   refreshTokens RefreshToken[]
   favorites     Favorite[]
+  statusReports StatusReport[]
+  wallet        Wallet?
+  tickets       Ticket[]
 
   @@map("users")
 }
@@ -59,12 +82,19 @@ model Route {
   number    String    @unique
   name      String
   plateType PlateType @default(ORDINARY)
+  // ค่าโดยสารเหมา (บาท) — ใช้ตอนซื้อตั๋วอิเล็กทรอนิกส์ผ่านกระเป๋าเงินในแอป
+  fare      Int       @default(15)
+  // เส้นทางจริงตามถนน (ไม่ใช่เส้นตรงต่อจุดป้าย) — เก็บเป็น array ของ [lat, lng] ที่ได้จาก routing engine
+  // (ดู scripts/fetch-route-geometry.ts) ถ้ายังไม่เคยรันสคริปต์ จะเป็น null แล้ว frontend fallback ไปลากเส้นตรงระหว่างป้ายแทน
+  routeGeometry Json?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  stops     Stop[]
-  location  RouteLocation?
-  favorites Favorite[]
+  stops         Stop[]
+  location      RouteLocation?
+  favorites     Favorite[]
+  statusReports StatusReport[]
+  tickets       Ticket[]
 
   @@map("routes")
 }
@@ -78,8 +108,33 @@ model Stop {
   lat      Float?
   lng      Float?
 
+  // โฆษณาท้องถิ่น (local ads) — ร้านค้าใกล้ป้ายนี้จ่ายเพื่อให้ขึ้นข้อความสั้น ๆ ตรงรายการป้าย
+  // ไม่มี sponsorName แปลว่าป้ายนี้ไม่มีสปอนเซอร์ ไม่แสดงอะไรเพิ่ม
+  sponsorName String?
+  sponsorNote String?
+
+  statusReports StatusReport[]
+
   @@unique([routeId, sequence])
   @@map("stops")
+}
+
+/// รายงานสถานะจากผู้ใช้ ("รถมาถึงป้ายนี้แล้ว", "รถแน่น" ฯลฯ) — ทดแทนการไม่มี GPS จริง
+/// ด้วยข้อมูลจากชุมชนผู้ใช้ (crowd-sourced), เป็นจุดต่างจากแอปที่ใช้ GPS จริงอย่างเดียว
+model StatusReport {
+  id        Int          @id @default(autoincrement())
+  routeId   Int
+  route     Route        @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  stopId    Int
+  stop      Stop         @relation(fields: [stopId], references: [id], onDelete: Cascade)
+  userId    Int?         // ไม่ login ก็รายงานได้ เพื่อให้มีข้อมูลเยอะพอจะใช้งานได้จริง
+  user      User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  status    ReportStatus
+  note      String?
+  createdAt DateTime     @default(now())
+
+  @@index([routeId, createdAt])
+  @@map("status_reports")
 }
 
 model RouteLocation {
@@ -105,4 +160,51 @@ model Favorite {
 
   @@unique([userId, routeId])
   @@map("favorites")
+}
+
+/// กระเป๋าเงินในแอป (e-Wallet) — โมเดลหารายได้แทน freemium เดิม
+/// ผู้ใช้เติมเงิน (เดโม mock ไม่มี payment gateway จริง) แล้วใช้ซื้อตั๋วอิเล็กทรอนิกส์ก่อนขึ้นรถ
+model Wallet {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  balance   Int      @default(0) // หน่วยบาท (เดโม ไม่มีทศนิยม)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  transactions WalletTransaction[]
+
+  @@map("wallets")
+}
+
+/// ประวัติธุรกรรมของกระเป๋าเงิน — เติมเงิน / ซื้อตั๋ว / คืนเงิน
+model WalletTransaction {
+  id           Int          @id @default(autoincrement())
+  walletId     Int
+  wallet       Wallet       @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  type         WalletTxType
+  amount       Int          // ค่าบวก = เงินเข้า, ค่าลบ = เงินออก
+  balanceAfter Int          // ยอดคงเหลือหลังทำรายการนี้ (เก็บไว้โชว์ประวัติได้โดยไม่ต้องคำนวณใหม่)
+  note         String?
+  createdAt    DateTime     @default(now())
+
+  @@index([walletId, createdAt])
+  @@map("wallet_transactions")
+}
+
+/// ตั๋วอิเล็กทรอนิกส์ — ซื้อล่วงหน้าด้วยเงินในกระเป๋า แล้วโชว์โค้ด/QR ให้คนขับ/กระเป๋ารถสแกนตอนขึ้นรถ
+model Ticket {
+  id          Int          @id @default(autoincrement())
+  code        String       @unique // รหัสใช้แสดงเป็น QR ให้สแกนตอนขึ้นรถ
+  userId      Int
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  routeId     Int
+  route       Route        @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  price       Int
+  status      TicketStatus @default(UNUSED)
+  purchasedAt DateTime     @default(now())
+  usedAt      DateTime?
+
+  @@index([userId, purchasedAt])
+  @@map("tickets")
 }

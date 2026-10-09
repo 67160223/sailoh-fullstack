@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom'
-import RoutePlate from '../constants/components/RoutePlate'
-import ETABadge from '../constants/components/ETABadge'
-import ShareButton from '../constants/components/ShareButton'
-import RouteMap from '../constants/components/RouteMap'
+import RoutePlate from '../components/RoutePlate'
+import ETABadge from '../components/ETABadge'
+import ShareButton from '../components/ShareButton'
+import RouteMap from '../components/RouteMap'
+import StatusReportPanel from '../components/StatusReportPanel'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { useAuth } from '../context/AuthContext'
 import { useFavorites } from '../context/FavoritesContext'
@@ -31,6 +32,11 @@ export default function RouteDetail() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState(null)
+
+  // ซื้อตั๋วอิเล็กทรอนิกส์ด้วยเงินในกระเป๋า (e-Wallet)
+  const [buyingTicket, setBuyingTicket] = useState(false)
+  const [ticketMsg, setTicketMsg] = useState(null) // { text, insufficientBalance }
 
   useEffect(() => {
     let ignore = false
@@ -48,12 +54,18 @@ export default function RouteDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [routeId])
 
+  // poll ตำแหน่งรถทุก 3 วินาที — ตัว backend มี busSimulator ขยับตำแหน่งอัตโนมัติเรื่อยๆ (ดู src/jobs/busSimulator.ts)
+  // ถ้า fetch แค่ครั้งเดียวตอนโหลดหน้า จะไม่เห็นรถขยับเลยแม้หลังบ้านจะอัปเดตอยู่ตลอดก็ตาม
   useEffect(() => {
     let ignore = false
-    authFetch(`/routes/${routeId}/location`)
-      .then((data) => { if (!ignore) setLocation(data) })
-      .catch(() => { if (!ignore) setLocation(null) }) // ยังไม่มีตำแหน่ง GPS โพสต์เข้ามา ก็แสดงผลแบบไม่มีตำแหน่งได้
-    return () => { ignore = true }
+    function loadLocation() {
+      authFetch(`/routes/${routeId}/location`)
+        .then((data) => { if (!ignore) setLocation(data) })
+        .catch(() => { if (!ignore) setLocation(null) }) // ยังไม่มีตำแหน่ง GPS โพสต์เข้ามา ก็แสดงผลแบบไม่มีตำแหน่งได้
+    }
+    loadLocation()
+    const interval = setInterval(loadLocation, 3000)
+    return () => { ignore = true; clearInterval(interval) }
   }, [routeId, authFetch])
 
   useEffect(() => {
@@ -84,10 +96,33 @@ export default function RouteDetail() {
       return
     }
     setSaving(true)
+    setSaveError(null)
     try {
       await toggleFavorite(route)
+    } catch (err) {
+      setSaveError({ message: err.message })
     } finally {
       setSaving(false)
+    }
+  }
+
+  async function handleBuyTicket() {
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: routerLocation } })
+      return
+    }
+    setBuyingTicket(true)
+    setTicketMsg(null)
+    try {
+      const ticket = await authFetch(`/routes/${routeId}/tickets`, { method: 'POST' })
+      setTicketMsg({ text: `ซื้อตั๋วสำเร็จ รหัส ${ticket.code} — ดูตั๋วและใช้งานได้ที่หน้ากระเป๋าเงิน` })
+    } catch (err) {
+      setTicketMsg({
+        text: err.message,
+        insufficientBalance: err.details?.code === 'INSUFFICIENT_BALANCE',
+      })
+    } finally {
+      setBuyingTicket(false)
     }
   }
 
@@ -148,7 +183,16 @@ export default function RouteDetail() {
           {route.stops.map((stop) => (
             <li key={stop.id} className={stop.id === location?.nextStopId ? 'is-next' : ''}>
               <span className="route-detail__stop-dot" />
-              {stop.name}
+              <span className="route-detail__stop-text">
+                {stop.name}
+                {stop.sponsorName && (
+                  <span className="route-detail__sponsor">
+                    <span className="route-detail__sponsor-tag">โฆษณา</span>
+                    <strong>{stop.sponsorName}</strong>
+                    {stop.sponsorNote && <span> — {stop.sponsorNote}</span>}
+                  </span>
+                )}
+              </span>
             </li>
           ))}
         </ol>
@@ -158,6 +202,7 @@ export default function RouteDetail() {
             stops={route.stops}
             busPosition={location ? { lat: location.lat, lng: location.lng, status: location.status } : null}
             nextStopId={location?.nextStopId}
+            routeGeometry={route.routeGeometry}
             height={300}
           />
         </div>
@@ -169,6 +214,23 @@ export default function RouteDetail() {
         </button>
         <ShareButton route={route} />
       </div>
+
+      {saveError && (
+        <p className="route-detail__save-error">{saveError.message}</p>
+      )}
+
+      <button className="route-detail__buy-ticket" onClick={handleBuyTicket} disabled={buyingTicket}>
+        {buyingTicket ? 'กำลังซื้อตั๋ว...' : `🎫 ซื้อตั๋วสายนี้ (${route.fare} บาท)`}
+      </button>
+
+      {ticketMsg && (
+        <p className="route-detail__ticket-msg">
+          {ticketMsg.text}
+          {ticketMsg.insufficientBalance && <Link to="/wallet"> → ไปเติมเงิน</Link>}
+        </p>
+      )}
+
+      <StatusReportPanel routeId={route.id} stops={route.stops} />
     </div>
   )
 }

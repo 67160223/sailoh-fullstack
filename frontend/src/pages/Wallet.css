@@ -1,0 +1,251 @@
+.wallet__back {
+  color: var(--text-muted);
+  font-size: 13px;
+  display: inline-block;
+  margin-bottom: 14px;
+}
+
+.wallet__header h1 {
+  font-size: 22px;
+  margin-top: 4px;
+}
+
+.wallet__balance-card {
+  margin-top: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px 16px;
+}
+
+.wallet__balance-label {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.wallet__balance-amount {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 34px;
+  color: var(--amber);
+  margin-top: 4px;
+}
+
+.wallet__balance-amount span {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+
+.wallet__quick-amounts {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.wallet__quick-amounts button {
+  flex: 1;
+  min-width: 64px;
+  padding: 10px 0;
+  border-radius: 999px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.wallet__quick-amounts button:hover {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+.wallet__custom-topup {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.wallet__custom-topup input {
+  flex: 1;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 14px;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.wallet__custom-topup input:focus-visible {
+  border-color: var(--amber);
+}
+
+.wallet__custom-topup button {
+  padding: 11px 18px;
+  border-radius: 10px;
+  background: var(--amber);
+  color: #14171c;
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.wallet__custom-topup button:disabled {
+  opacity: 0.6;
+}
+
+.wallet__topup-msg {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--green);
+}
+
+.wallet__disclaimer {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.wallet__card {
+  margin-top: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.wallet__card-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.wallet__card-desc {
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.wallet__tx-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wallet__tx-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.wallet__tx-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+.wallet__tx-row > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wallet__tx-row strong {
+  font-size: 13px;
+}
+
+.wallet__tx-note {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.wallet__tx-date {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.wallet__tx-amount {
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.wallet__tx-amount.is-positive { color: var(--green); }
+.wallet__tx-amount.is-negative { color: var(--red); }
+
+.wallet__ticket-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wallet__ticket {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  background: var(--surface-raised);
+}
+
+.wallet__ticket--used {
+  opacity: 0.6;
+}
+
+.wallet__ticket-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 13px;
+}
+
+.wallet__ticket-route {
+  font-weight: 700;
+}
+
+.wallet__ticket-status {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.wallet__ticket--unused .wallet__ticket-status {
+  color: var(--amber);
+  font-weight: 700;
+}
+
+.wallet__ticket-code {
+  font-family: var(--font-mono, monospace);
+  letter-spacing: 0.06em;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 10px 0;
+  text-align: center;
+  padding: 10px;
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+}
+
+.wallet__ticket-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.wallet__ticket-use-btn {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--amber);
+  color: #14171c;
+  font-weight: 700;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.wallet__ticket-use-btn:disabled {
+  opacity: 0.6;
+}

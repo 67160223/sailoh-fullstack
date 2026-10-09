@@ -1,28 +1,20 @@
+import fs from 'fs'
+import path from 'path'
 import bcrypt from 'bcryptjs'
 import { PrismaClient, PlateType } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-async function main() {
-  const adminPasswordHash = await bcrypt.hash('Admin@1234', 10)
-  await prisma.user.upsert({
-    where: { username: 'admin' },
-    update: {},
-    create: {
-      username: 'admin',
-      email: 'admin@sailoh.local',
-      passwordHash: adminPasswordHash,
-      displayName: 'ผู้ดูแลระบบ',
-      role: 'ADMIN',
-    },
-  })
+type RouteSeed = {
+  number: string
+  name: string
+  plateType: PlateType
+  stops: { name: string; lat: number; lng: number }[]
+}
 
-  const routesData: {
-    number: string
-    name: string
-    plateType: PlateType
-    stops: { name: string; lat: number; lng: number }[]
-  }[] = [
+// ข้อมูลสำรอง — พิกัดพิมพ์มือ (คร่าวๆ ไม่ใช่พิกัดจริง) ใช้ตอนยังไม่ได้รัน scripts/fetch-osm-routes.ts
+// หรือสายไหนดึงจาก OpenStreetMap ไม่ได้ (ดูคอมเมนต์ท้ายไฟล์)
+const fallbackRoutesData: RouteSeed[] = [
     {
       number: '140',
       name: 'อนุสาวรีย์ชัยฯ – ปากน้ำ',
@@ -68,6 +60,35 @@ async function main() {
       ],
     },
   ]
+
+async function main() {
+  const adminPasswordHash = await bcrypt.hash('Admin@1234', 10)
+  await prisma.user.upsert({
+    where: { username: 'admin' },
+    update: {},
+    create: {
+      username: 'admin',
+      email: 'admin@sailoh.local',
+      passwordHash: adminPasswordHash,
+      displayName: 'ผู้ดูแลระบบ',
+      role: 'ADMIN',
+    },
+  })
+
+  // ถ้ารัน scripts/fetch-osm-routes.ts ไว้แล้ว จะมีไฟล์นี้ — เป็นข้อมูลสาย+ป้ายจริงจาก OpenStreetMap
+  // สายไหนที่ OSM ดึงไม่ได้ (ไม่มีในไฟล์นี้) จะ fallback กลับไปใช้พิกัดพิมพ์มือด้านบนแทน ไม่ให้ขาดหายไปเฉยๆ
+  const osmDataPath = path.join(__dirname, 'seed-data', 'osm-routes.json')
+  let routesData: RouteSeed[] = fallbackRoutesData
+
+  if (fs.existsSync(osmDataPath)) {
+    const osmRoutes: RouteSeed[] = JSON.parse(fs.readFileSync(osmDataPath, 'utf-8'))
+    const osmNumbers = new Set(osmRoutes.map((r) => r.number))
+    const stillNeeded = fallbackRoutesData.filter((r) => !osmNumbers.has(r.number))
+    routesData = [...osmRoutes, ...stillNeeded]
+    console.log(`ใช้ข้อมูลจริงจาก OpenStreetMap ${osmRoutes.length} สาย (+ สำรอง ${stillNeeded.length} สาย)`)
+  } else {
+    console.log('ยังไม่พบ prisma/seed-data/osm-routes.json — ใช้พิกัดสำรอง (รัน scripts/fetch-osm-routes.ts ก่อนเพื่อได้ข้อมูลจริง)')
+  }
 
   for (const r of routesData) {
     await prisma.route.upsert({

@@ -1,17 +1,18 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
-import TopBar from './constants/components/TopBar'
-import BottomNav from './constants/components/BottomNav'
+import TopBar from './components/TopBar'
+import BottomNav from './components/BottomNav'
 import Home from './pages/Home'
 import RouteDetail from './pages/RouteDetail'
 import Saved from './pages/Saved'
 import Profile from './pages/Profile'
+import Wallet from './pages/Wallet'
 import Settings from './pages/Settings'
 import AdminUsers from './pages/AdminUsers'
 import AdminUserDetail from './pages/AdminUserDetail'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import ForgotPassword from './pages/ForgotPassword'
-import { ProtectedRoute, GuestOnly, AdminRoute } from './constants/components/RouteGuards'
+import { ProtectedRoute, GuestOnly, AdminRoute } from './components/RouteGuards'
 
 const HIDE_CHROME_ON = ['/login', '/register', '/forgot-password']
 
@@ -31,6 +32,7 @@ export default function App() {
         <Route path="/route/:id" element={<RouteDetail />} />
         <Route path="/saved" element={<ProtectedRoute><Saved /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/wallet" element={<ProtectedRoute><Wallet /></ProtectedRoute>} />
         <Route path="/settings" element={<Settings />} />
 
         <Route path="/admin/users" element={<AdminRoute><AdminUsers /></AdminRoute>} />

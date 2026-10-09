@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useRef } from 'react'
+import { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react'
 import { apiFetch, ApiFetchError } from '../lib/api'
 
 const AuthContext = createContext(null)
@@ -17,6 +17,19 @@ function loadStored() {
 export function AuthProvider({ children }) {
   const [state, setState] = useState(loadStored)
   const refreshingRef = useRef(null) // กัน refresh ซ้อนกันหลาย request พร้อมกัน
+
+  // sync สถานะ login ข้ามแท็บ — แท็บอื่นที่เปิดค้างไว้ตั้งแต่ก่อน login/logout จะไม่รู้เรื่อง
+  // เพราะ localStorage เปลี่ยนแต่ React state ในแท็บนั้นไม่ได้อ่านซ้ำเอง ต้องฟัง "storage" event เอง
+  // (event นี้ยิงแค่ในแท็บอื่นที่ "ไม่ได้" เป็นคนเขียนเท่านั้น ตามสเปกของ localStorage)
+  useEffect(() => {
+    function handleStorageChange(e) {
+      if (e.key === STORAGE_KEY) {
+        setState(loadStored())
+      }
+    }
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [])
 
   const persist = useCallback((next) => {
     setState(next)

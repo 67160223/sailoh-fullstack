@@ -1,0 +1,19 @@
+.route-guard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.route-guard__btn {
+  margin-top: 16px;
+  background: var(--amber);
+  color: #14171c;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 11px 20px;
+  border-radius: 999px;
+}
+
+.route-guard__btn:hover {
+  filter: brightness(1.08);
+}

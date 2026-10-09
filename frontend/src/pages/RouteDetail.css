@@ -145,3 +145,78 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+.route-detail__stop-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* โฆษณาท้องถิ่น — ร้านค้าใกล้ป้ายนี้จ่ายเพื่อขึ้นข้อความสั้น ๆ ต่อท้ายชื่อป้าย */
+.route-detail__sponsor {
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.route-detail__sponsor strong { color: var(--text); font-weight: 600; }
+
+.route-detail__sponsor-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--amber);
+  border: 1px solid var(--amber);
+  border-radius: 999px;
+  padding: 1px 7px;
+  flex-shrink: 0;
+}
+
+.route-detail__save-error {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--red);
+  line-height: 1.6;
+}
+
+.route-detail__save-error a {
+  color: var(--amber);
+  font-weight: 700;
+}
+
+/* ซื้อตั๋วอิเล็กทรอนิกส์ด้วยเงินในกระเป๋า (e-Wallet) */
+.route-detail__buy-ticket {
+  width: 100%;
+  margin-top: 10px;
+  padding: 13px 0;
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.route-detail__buy-ticket:hover {
+  background: color-mix(in srgb, var(--amber) 12%, transparent);
+}
+
+.route-detail__buy-ticket:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.route-detail__ticket-msg {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.route-detail__ticket-msg a {
+  color: var(--amber);
+  font-weight: 700;
+}

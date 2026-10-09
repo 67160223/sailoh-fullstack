@@ -74,6 +74,23 @@
   color: var(--red);
 }
 
+.profile__wallet-link {
+  display: block;
+  margin-top: 18px;
+  padding: 13px 16px;
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  font-weight: 700;
+  font-size: 14px;
+  text-align: center;
+}
+
+.profile__wallet-link:hover {
+  background: color-mix(in srgb, var(--amber) 10%, transparent);
+}
+
 .profile__card {
   margin-top: 18px;
   background: var(--surface);
