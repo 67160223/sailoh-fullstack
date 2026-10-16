@@ -32,6 +32,12 @@ enum ReportStatus {
   NOT_COMING // รถไม่มา/ยกเลิกรอบนี้
 }
 
+enum CrowdLevel {
+  EMPTY    // ว่าง นั่งได้สบาย
+  MODERATE // คนพอดี มีที่ยืน
+  FULL     // แน่น แทบไม่มีที่ยืน
+}
+
 enum WalletTxType {
   TOPUP            // เติมเงิน (เดโม ไม่มี payment gateway จริง)
   TICKET_PURCHASE  // ซื้อตั๋วอิเล็กทรอนิกส์
@@ -58,6 +64,7 @@ model User {
   refreshTokens RefreshToken[]
   favorites     Favorite[]
   statusReports StatusReport[]
+  crowdReports  CrowdReport[]
   wallet        Wallet?
   tickets       Ticket[]
 
@@ -94,6 +101,7 @@ model Route {
   location      RouteLocation?
   favorites     Favorite[]
   statusReports StatusReport[]
+  crowdReports  CrowdReport[]
   tickets       Ticket[]
 
   @@map("routes")
@@ -135,6 +143,21 @@ model StatusReport {
 
   @@index([routeId, createdAt])
   @@map("status_reports")
+}
+
+/// รายงานความหนาแน่นผู้โดยสารบนรถ (ว่าง/พอดี/แน่น) แบบ crowd-sourced — แยกจาก StatusReport
+/// เพราะเป็นข้อมูลระดับ "สาย" ไม่ผูกกับป้ายใดป้ายหนึ่ง และสรุปเป็นระดับเดียวต่อสายได้
+model CrowdReport {
+  id        Int        @id @default(autoincrement())
+  routeId   Int
+  route     Route      @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  userId    Int?       // ไม่ login ก็รายงานได้ เหมือน StatusReport
+  user      User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  level     CrowdLevel
+  createdAt DateTime   @default(now())
+
+  @@index([routeId, createdAt])
+  @@map("crowd_reports")
 }
 
 model RouteLocation {

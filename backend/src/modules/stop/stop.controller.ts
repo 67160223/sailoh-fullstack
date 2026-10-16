@@ -17,3 +17,12 @@ export const deleteStop = asyncHandler(async (req: Request, res: Response) => {
   await stopService.deleteStop(Number(req.params.stopId))
   sendNoContent(res)
 })
+
+export const getNearbyStops = asyncHandler(async (req: Request, res: Response) => {
+  const stops = await stopService.findNearby({
+    lat: Number(req.query.lat),
+    lng: Number(req.query.lng),
+    limit: Number(req.query.limit) || 5,
+  })
+  sendSuccess(res, stops)
+})

@@ -5,6 +5,8 @@ import ETABadge from '../components/ETABadge'
 import ShareButton from '../components/ShareButton'
 import RouteMap from '../components/RouteMap'
 import StatusReportPanel from '../components/StatusReportPanel'
+import CrowdPanel from '../components/CrowdPanel'
+import ArrivalAlert from '../components/ArrivalAlert'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { useAuth } from '../context/AuthContext'
 import { useFavorites } from '../context/FavoritesContext'
@@ -159,6 +161,8 @@ export default function RouteDetail() {
         </div>
       )}
 
+      <ArrivalAlert key={route.id} routeId={route.id} routeNumber={route.number} stops={route.stops} />
+
       <div className="route-detail__toggle" role="tablist" aria-label="รูปแบบการแสดงผล">
         <button
           role="tab"
@@ -229,6 +233,8 @@ export default function RouteDetail() {
           {ticketMsg.insufficientBalance && <Link to="/wallet"> → ไปเติมเงิน</Link>}
         </p>
       )}
+
+      <CrowdPanel routeId={route.id} />
 
       <StatusReportPanel routeId={route.id} stops={route.stops} />
     </div>

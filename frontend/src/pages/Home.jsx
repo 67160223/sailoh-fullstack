@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import SearchBar from '../components/SearchBar'
+import NearbyStops from '../components/NearbyStops'
 import RoutePlate from '../components/RoutePlate'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { useAuth } from '../context/AuthContext'
@@ -34,6 +35,8 @@ export default function Home() {
       </header>
 
       <SearchBar autoFocus />
+
+      <NearbyStops />
 
       {recent.length > 0 && (
         <section className="home__section">

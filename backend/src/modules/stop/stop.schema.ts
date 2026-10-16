@@ -17,3 +17,10 @@ export const updateStopSchema = z.object({
   sponsorName: z.string().max(100).nullable().optional(),
   sponsorNote: z.string().max(200).nullable().optional(),
 })
+
+// GET /stops/nearby?lat=..&lng=..&limit=..  (query string มาเป็นข้อความ ต้องแปลงเป็นตัวเลขเอง)
+export const nearbyStopsQuerySchema = z.object({
+  lat: z.coerce.number().min(-90).max(90),
+  lng: z.coerce.number().min(-180).max(180),
+  limit: z.coerce.number().int().min(1).max(20).default(5),
+})

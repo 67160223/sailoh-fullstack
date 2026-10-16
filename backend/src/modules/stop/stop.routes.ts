@@ -2,7 +2,7 @@ import { Router } from 'express'
 import * as controller from './stop.controller'
 import { requireAuth, requireRole } from '../../middleware/auth.middleware'
 import { validate } from '../../middleware/validate.middleware'
-import { addStopSchema, updateStopSchema } from './stop.schema'
+import { addStopSchema, updateStopSchema, nearbyStopsQuerySchema } from './stop.schema'
 
 // mount ที่ /routes/:id/stops — เพิ่มป้ายในสาย (ADMIN)
 export const nestedStopRouter = Router({ mergeParams: true })
@@ -10,5 +10,7 @@ nestedStopRouter.post('/', requireAuth, requireRole('ADMIN'), validate(addStopSc
 
 // mount ที่ /stops/:stopId — แก้ไข/ลบป้าย (ADMIN)
 export const stopRouter = Router()
+// สาธารณะ (ไม่ต้อง login) — ป้ายใกล้พิกัดผู้ใช้ สายละ 1 ป้าย
+stopRouter.get('/nearby', validate(nearbyStopsQuerySchema, 'query'), controller.getNearbyStops)
 stopRouter.put('/:stopId', requireAuth, requireRole('ADMIN'), validate(updateStopSchema), controller.updateStop)
 stopRouter.delete('/:stopId', requireAuth, requireRole('ADMIN'), controller.deleteStop)
