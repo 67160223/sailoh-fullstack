@@ -9,6 +9,7 @@ import { trackingRouter } from '../modules/tracking/tracking.routes'
 import { statusReportRouter } from '../modules/statusReport/statusReport.routes'
 import { crowdRouter } from '../modules/crowd/crowd.routes'
 import walletRoutes from '../modules/wallet/wallet.routes'
+import tripRoutes from '../modules/trip/trip.routes'
 import { nestedTicketRouter, ticketRouter } from '../modules/ticket/ticket.routes'
 import { sendSuccess } from '../utils/apiResponse'
 
@@ -26,6 +27,7 @@ router.use('/routes/:id', crowdRouter) // GET/POST /routes/:id/crowd (ควา�
 router.use('/routes/:id', nestedTicketRouter) // POST /routes/:id/tickets (ซื้อตั๋ว)
 router.use('/stops', stopRouter) // PUT/DELETE /stops/:stopId
 router.use('/favorites', favoriteRoutes)
+router.use('/trips', tripRoutes) // GET /trips/stops, GET /trips/plan?from=&to= (วางแผนเดินทางสายเดียว)
 router.use('/wallet', walletRoutes) // GET /wallet, POST /wallet/topup
 router.use('/tickets', ticketRouter) // GET /tickets/me, POST /tickets/:ticketId/use
 

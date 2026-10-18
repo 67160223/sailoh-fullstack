@@ -3,6 +3,7 @@ import './BottomNav.css'
 
 const ITEMS = [
   { to: '/', label: 'ค้นหา', icon: '🔍', end: true },
+  { to: '/plan', label: 'วางแผน', icon: '🧭' },
   { to: '/wallet', label: 'กระเป๋าเงิน', icon: '👛' },
   { to: '/saved', label: 'สายที่บันทึก', icon: '📌' },
 ]

@@ -4,7 +4,11 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // สายเลข — real-time bus checker
 // PWA config ทำให้ "ติดตั้งหน้าเว็บ" แทนการโหลดแอปหนัก ๆ (ตอบโจทย์ pain point เรื่อง 3G/มือถือ)
+// VITE_BASE ใช้ตอน deploy GitHub Pages (เช่น /sailoh-fullstack/) ค่าเริ่มต้น '/' สำหรับรันปกติ
+const base = process.env.VITE_BASE || '/'
+
 export default defineConfig({
+  base,
   plugins: [
     react(),
     VitePWA({
@@ -17,7 +21,8 @@ export default defineConfig({
         theme_color: '#14171C',
         background_color: '#14171C',
         display: 'standalone',
-        start_url: '/',
+        start_url: base,
+        scope: base,
         icons: [
           { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'icon-512.png', sizes: '512x512', type: 'image/png' }

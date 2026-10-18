@@ -12,7 +12,7 @@ const REARM_MARGIN_MINS = 2 // รถต้องห่างเกิน thresh
 // ต้องผ่าน service worker จึงลองทั้งสองทางตามลำดับ ถ้าไม่ได้เลยก็ยังมีแบนเนอร์ในหน้า + สั่นเครื่องเป็นตัวสำรอง
 async function showBrowserNotification(title, body) {
   if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return
-  const options = { body, icon: '/icon-192.png', tag: 'arrival-alert' }
+  const options = { body, icon: import.meta.env.BASE_URL + 'icon-192.png', tag: 'arrival-alert' }
   try {
     new Notification(title, options)
   } catch {

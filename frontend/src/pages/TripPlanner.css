@@ -1,0 +1,169 @@
+.trip__header h1 {
+  font-size: 24px;
+  margin: 6px 0;
+  line-height: 1.25;
+}
+
+.trip__sub {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.trip__form {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.trip__fields {
+  position: relative; /* ให้ปุ่มสลับลอยอยู่กลางระหว่างสองช่อง */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.trip__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.trip__field input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  padding: 12px 14px;
+  padding-right: 52px; /* เว้นที่ให้ปุ่มสลับ */
+  font-size: 15px;
+  font-family: var(--font-body);
+}
+
+.trip__field input:focus {
+  outline: none;
+  border-color: var(--amber);
+}
+
+.trip__swap {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  color: var(--text);
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.trip__swap:hover {
+  border-color: var(--amber);
+}
+
+.trip__submit {
+  background: var(--amber);
+  color: #14171c;
+  border: none;
+  border-radius: 999px;
+  padding: 12px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.trip__submit:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.trip__msg,
+.trip__note {
+  margin: 14px 0 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.trip__list {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.trip__card {
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+}
+
+.trip__card:hover {
+  border-color: var(--amber);
+}
+
+.trip__card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.trip__card-title {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.trip__card-title span {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trip__fare {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.trip__fare strong {
+  color: var(--amber);
+  font-size: 18px;
+  font-family: var(--font-display);
+}
+
+.trip__fare span {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.trip__path {
+  margin: 10px 0 0;
+  font-size: 13px;
+}
+
+.trip__meta {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.trip__bus {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--green);
+}

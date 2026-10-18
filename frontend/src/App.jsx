@@ -3,6 +3,7 @@ import TopBar from './components/TopBar'
 import BottomNav from './components/BottomNav'
 import Home from './pages/Home'
 import RouteDetail from './pages/RouteDetail'
+import TripPlanner from './pages/TripPlanner'
 import Saved from './pages/Saved'
 import Profile from './pages/Profile'
 import Wallet from './pages/Wallet'
@@ -30,6 +31,7 @@ export default function App() {
 
         <Route path="/" element={<Home />} />
         <Route path="/route/:id" element={<RouteDetail />} />
+        <Route path="/plan" element={<TripPlanner />} />
         <Route path="/saved" element={<ProtectedRoute><Saved /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/wallet" element={<ProtectedRoute><Wallet /></ProtectedRoute>} />

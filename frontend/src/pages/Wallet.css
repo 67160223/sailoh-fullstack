@@ -249,3 +249,41 @@
 .wallet__ticket-use-btn:disabled {
   opacity: 0.6;
 }
+
+/* ---- QR ตั๋ว ---- */
+.wallet__ticket-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.wallet__ticket-qr-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.wallet__ticket-qr-btn:hover {
+  border-color: var(--amber);
+}
+
+.wallet__ticket-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+}
+
+.wallet__ticket-qr p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}

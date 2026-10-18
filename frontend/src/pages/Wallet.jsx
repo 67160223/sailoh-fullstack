@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import QrCode from '../components/QrCode'
 import './Wallet.css'
 
 const QUICK_AMOUNTS = [50, 100, 200, 500]
@@ -40,6 +41,7 @@ export default function WalletPage() {
 
   const [usingTicketId, setUsingTicketId] = useState(null)
   const [ticketErr, setTicketErr] = useState('')
+  const [qrTicketId, setQrTicketId] = useState(null) // ตั๋วที่กางแสดง QR อยู่ (แสดงทีละใบ)
 
   function loadAll() {
     setLoading(true)
@@ -174,16 +176,33 @@ export default function WalletPage() {
                     <div className="wallet__ticket-bottom">
                       <span>{ticket.price.toLocaleString('th-TH')} บาท · ซื้อเมื่อ {formatDateTime(ticket.purchasedAt)}</span>
                       {ticket.status === 'UNUSED' && (
-                        <button
-                          type="button"
-                          className="wallet__ticket-use-btn"
-                          onClick={() => handleUseTicket(ticket.id)}
-                          disabled={usingTicketId === ticket.id}
-                        >
-                          {usingTicketId === ticket.id ? 'กำลังใช้...' : 'ใช้ตั๋วนี้ (ขึ้นรถแล้ว)'}
-                        </button>
+                        <div className="wallet__ticket-actions">
+                          <button
+                            type="button"
+                            className="wallet__ticket-qr-btn"
+                            onClick={() => setQrTicketId((prev) => (prev === ticket.id ? null : ticket.id))}
+                            aria-expanded={qrTicketId === ticket.id}
+                          >
+                            {qrTicketId === ticket.id ? 'ซ่อน QR' : '🔳 แสดง QR'}
+                          </button>
+                          <button
+                            type="button"
+                            className="wallet__ticket-use-btn"
+                            onClick={() => handleUseTicket(ticket.id)}
+                            disabled={usingTicketId === ticket.id}
+                          >
+                            {usingTicketId === ticket.id ? 'กำลังใช้...' : 'ใช้ตั๋วนี้ (ขึ้นรถแล้ว)'}
+                          </button>
+                        </div>
                       )}
                     </div>
+
+                    {ticket.status === 'UNUSED' && qrTicketId === ticket.id && (
+                      <div className="wallet__ticket-qr">
+                        <QrCode value={`SAILOH:${ticket.code}`} size={200} />
+                        <p>ยื่น QR นี้ให้คนขับ/กระเป๋ารถสแกนตอนขึ้นรถ</p>
+                      </div>
+                    )}
                   </li>
                 ))}
               </ul>
