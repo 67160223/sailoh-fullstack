@@ -13,6 +13,23 @@ sailoh-fullstack/
 └── frontend/            ← เดิมคือ final-bus-tracker (React + Vite)
 ```
 
+## วิธีรันแบบไม่ใช้ Docker (โคลนจาก GitHub แล้วเปิดได้เลย — Windows)
+
+ต้องติดตั้งก่อน: **Git**, **Node.js (LTS)** และ **PostgreSQL** (จำรหัสผ่าน user `postgres` ที่ตั้งตอนติดตั้ง)
+
+```powershell
+git clone https://github.com/67160223/sailoh-fullstack.git
+cd sailoh-fullstack
+.\setup.bat     # ครั้งแรกครั้งเดียว: สร้างฐานข้อมูล, ติดตั้งแพ็กเกจ, ใส่ข้อมูลตัวอย่าง
+.\start.bat     # เปิด backend + frontend แล้วเปิดเบราว์เซอร์ที่ http://localhost:5173
+```
+
+ครั้งต่อไปใช้แค่ `.\start.bat` — หลัง `git pull` ที่มีการแก้ฐานข้อมูล ให้รัน `npx prisma migrate deploy`
+ในโฟลเดอร์ `backend` เพิ่ม บัญชีผู้ดูแลที่ seed ให้: `admin` / `Admin@1234`
+
+ถ้า `setup.bat` ขึ้นว่าหา `psql` ไม่เจอ ให้เพิ่มโฟลเดอร์ `bin` ของ PostgreSQL ลงใน PATH
+(เช่น `C:\Program Files\PostgreSQL\17\bin`)
+
 ## วิธีรันแบบเร็วที่สุด (1 คำสั่ง ได้ครบทุกอย่าง)
 
 ```bash
