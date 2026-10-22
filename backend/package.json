@@ -11,7 +11,6 @@
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:migrate:dev": "prisma migrate dev",
     "prisma:seed": "tsx prisma/seed.ts",
-    "fetch:routes": "tsx scripts/fetch-osm-routes.ts",
     "fetch:geometry": "tsx scripts/fetch-route-geometry.ts"
   },
   "prisma": {

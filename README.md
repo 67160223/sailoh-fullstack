@@ -7,13 +7,14 @@
 
 ```
 sailoh-fullstack/
-├── docker-compose.yml   ← ไฟล์เดียว รันทั้ง db + api + frontend + pgadmin
-├── .env.example
+├── start.bat            ← ดับเบิลคลิกอันเดียว ตั้งค่า + เปิดเว็บให้ครบ
+├── stop-db.bat          ← ปิดฐานข้อมูลที่ start.bat เปิดไว้
+├── scripts/             ← สคริปต์ช่วยของ start.bat (ฐานข้อมูลพกพา, สร้าง .env)
 ├── backend/             ← เดิมคือ bus-tracking-api (TypeScript + Express + Prisma + PostgreSQL)
 └── frontend/            ← เดิมคือ final-bus-tracker (React + Vite)
 ```
 
-## วิธีรันแบบไม่ใช้ Docker (โคลนจาก GitHub แล้วกด start.bat เลย — Windows)
+## วิธีรัน (โคลนจาก GitHub แล้วกด start.bat เลย — Windows)
 
 ต้องติดตั้งก่อนแค่ **Git** และ **Node.js (LTS)** — ไม่ต้องติดตั้ง PostgreSQL และไม่ต้องใช้รหัสผ่านใด ๆ
 
@@ -34,57 +35,7 @@ cd sailoh-fullstack
 
 ถ้าดาวน์โหลด PostgreSQL แบบพกพาไม่ได้ ให้ติดตั้ง PostgreSQL ตามปกติ แล้วรัน `start.bat` ซ้ำ (สคริปต์ใช้แค่ไฟล์โปรแกรมของมัน ไม่ต้องรู้รหัสผ่าน)
 
-### ถ้าอยากใช้ PostgreSQL ที่ติดตั้งในเครื่องเอง (แบบเดิม)
-รัน `.\setup.bat` (จะถามรหัสผ่านของ user `postgres`) แล้วจึงรัน `.\start.bat` — ถ้ามี `backend/.env` อยู่แล้ว `start.bat` จะใช้ฐานข้อมูลตามไฟล์นั้น
-
-## วิธีรันแบบเร็วที่สุด (1 คำสั่ง ได้ครบทุกอย่าง)
-
-```bash
-cp .env.example .env
-cp backend/.env.example backend/.env
-# แก้ JWT_ACCESS_SECRET / JWT_REFRESH_SECRET / JWT_RESET_SECRET ใน backend/.env
-# ให้เป็นค่าสุ่มของจริงก่อนใช้งานจริง (ตัวอย่างที่ให้มาใช้ได้แค่ตอนทดสอบ)
-
-docker compose up --build
-```
-
-รอจน container ทั้ง 4 ตัว (`sailoh_db`, `sailoh_api`, `sailoh_frontend`, `sailoh_pgadmin`) ขึ้นเป็น
-`Up`/`Healthy` แล้วเข้าใช้งานได้ที่:
-
-| อะไร | ที่ไหน |
-|---|---|
-| **หน้าเว็บ (frontend)** | http://localhost:8081 |
-| API | http://localhost:4000/api/v1 |
-| pgAdmin (ดูฐานข้อมูล) | http://localhost:8080 |
-
-จากนั้น seed ข้อมูลตัวอย่าง (สร้างบัญชี admin + สายรถเมล์ตัวอย่าง — ทำครั้งเดียวพอ):
-
-```bash
-docker compose exec api npm run prisma:seed
-```
-
-ได้บัญชี `username: admin` / `password: Admin@1234` (role ADMIN) — เปลี่ยนรหัสผ่านทันทีก่อนใช้งานจริง
-
-> ปิดโปรแกรมด้วย `docker compose down` เปิดใหม่รอบหน้าแค่ `docker compose up` (ไม่ต้อง `--build` ซ้ำ
-> ถ้าไม่ได้แก้โค้ด)
-
-## ทางเลือกที่ 2: dev แบบ hot-reload (สำหรับตอนกำลังแก้โค้ด frontend บ่อยๆ)
-
-วิธีข้างบน build frontend เป็นไฟล์ static ทุกครั้งที่แก้โค้ดต้อง `docker compose up --build frontend`
-ใหม่ ถ้ากำลังแก้ frontend บ่อยๆ ใช้วิธีนี้จะสะดวกกว่า (มี hot-reload):
-
-```bash
-# เทอร์มินัลที่ 1 — รันแค่ db + api ผ่าน docker
-docker compose up db api
-
-# เทอร์มินัลที่ 2 — รัน frontend แบบ dev server ธรรมดา
-cd frontend
-cp .env.example .env
-npm install
-npm run dev
-```
-
-เปิด http://localhost:5173 แทน (Vite dev server มี hot-reload ให้)
+ถ้ามี `backend/.env` อยู่แล้ว (ชี้ไป PostgreSQL ของเครื่องเอง) `start.bat` จะใช้ฐานข้อมูลตามไฟล์นั้นและไม่สร้างฐานข้อมูลพกพา
 
 ## Flow การใช้งาน
 
@@ -163,7 +114,6 @@ ForgotPassword/Profile/AdminUsers/AdminUserDetail ครบ
 - เปลี่ยน `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` / `JWT_RESET_SECRET` เป็นค่าสุ่มยาว ๆ ของจริง
 - จำกัด `CORS_ORIGIN` ใน `backend/.env` ให้เป็นโดเมน frontend จริงเท่านั้น
 - เพิ่ม rate limiting ที่ `/auth/login`, `/auth/register` กัน brute-force
-- เปลี่ยนรหัสผ่าน pgAdmin/Postgres จากค่าตัวอย่างก่อน deploy จริงเสมอ
 - `forgot-password` คืน `resetToken` ตรงใน response เพราะโปรเจกต์นี้ไม่มีระบบส่งอีเมล — ของจริงต้อง
   ส่งทางอีเมลเท่านั้น
 - `avatarUrl` เก็บเป็น data URL (base64) ตรงในฐานข้อมูล เพื่อความง่าย — ของจริงควรใช้ object storage
