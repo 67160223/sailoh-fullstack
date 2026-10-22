@@ -12,7 +12,7 @@ type RouteSeed = {
   stops: { name: string; lat: number; lng: number }[]
 }
 
-// ข้อมูลสำรอง — พิกัดพิมพ์มือ (คร่าวๆ ไม่ใช่พิกัดจริง) ใช้ตอนยังไม่ได้รัน scripts/fetch-osm-routes.ts
+// ข้อมูลสำรอง — พิกัดพิมพ์มือ (คร่าวๆ ไม่ใช่พิกัดจริง) ใช้เป็นข้อมูลตั้งต้น
 // หรือสายไหนดึงจาก OpenStreetMap ไม่ได้ (ดูคอมเมนต์ท้ายไฟล์)
 const fallbackRoutesData: RouteSeed[] = [
     {
@@ -87,7 +87,7 @@ async function main() {
     routesData = [...osmRoutes, ...stillNeeded]
     console.log(`ใช้ข้อมูลจริงจาก OpenStreetMap ${osmRoutes.length} สาย (+ สำรอง ${stillNeeded.length} สาย)`)
   } else {
-    console.log('ยังไม่พบ prisma/seed-data/osm-routes.json — ใช้พิกัดสำรอง (รัน scripts/fetch-osm-routes.ts ก่อนเพื่อได้ข้อมูลจริง)')
+    console.log('ใช้ข้อมูลสายตั้งต้นในไฟล์ seed')
   }
 
   for (const r of routesData) {
