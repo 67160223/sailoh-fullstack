@@ -7,6 +7,8 @@ import { ApiErrorBody } from '../utils/apiResponse'
 export const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 นาที
   max: 5,
+  // นับเฉพาะครั้งที่ล็อกอินไม่สำเร็จ — ผู้ใช้ที่ล็อกอินผ่านปกติจะไม่ถูกจำกัด
+  skipSuccessfulRequests: true,
   standardHeaders: true, // ส่ง header RateLimit-* กลับไปให้ client เช็คได้ว่าเหลือกี่ครั้ง
   legacyHeaders: false,
   handler: (_req: Request, res: Response) => {
