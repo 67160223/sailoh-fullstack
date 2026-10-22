@@ -13,22 +13,29 @@ sailoh-fullstack/
 └── frontend/            ← เดิมคือ final-bus-tracker (React + Vite)
 ```
 
-## วิธีรันแบบไม่ใช้ Docker (โคลนจาก GitHub แล้วเปิดได้เลย — Windows)
+## วิธีรันแบบไม่ใช้ Docker (โคลนจาก GitHub แล้วกด start.bat เลย — Windows)
 
-ต้องติดตั้งก่อน: **Git**, **Node.js (LTS)** และ **PostgreSQL** (จำรหัสผ่าน user `postgres` ที่ตั้งตอนติดตั้ง)
+ต้องติดตั้งก่อนแค่ **Git** และ **Node.js (LTS)** — ไม่ต้องติดตั้ง PostgreSQL และไม่ต้องใช้รหัสผ่านใด ๆ
 
 ```powershell
 git clone https://github.com/67160223/sailoh-fullstack.git
 cd sailoh-fullstack
-.\setup.bat     # ครั้งแรกครั้งเดียว: สร้างฐานข้อมูล, ติดตั้งแพ็กเกจ, ใส่ข้อมูลตัวอย่าง
-.\start.bat     # เปิด backend + frontend แล้วเปิดเบราว์เซอร์ที่ http://localhost:5173
+.\start.bat
 ```
 
-ครั้งต่อไปใช้แค่ `.\start.bat` — หลัง `git pull` ที่มีการแก้ฐานข้อมูล ให้รัน `npx prisma migrate deploy`
-ในโฟลเดอร์ `backend` เพิ่ม บัญชีผู้ดูแลที่ seed ให้: `admin` / `Admin@1234`
+หรือดับเบิลคลิก `start.bat` ในโฟลเดอร์ได้เลย
 
-ถ้า `setup.bat` ขึ้นว่าหา `psql` ไม่เจอ ให้เพิ่มโฟลเดอร์ `bin` ของ PostgreSQL ลงใน PATH
-(เช่น `C:\Program Files\PostgreSQL\17\bin`)
+ครั้งแรก `start.bat` จะตั้งค่าทุกอย่างให้เอง (ใช้เวลาหลายนาที): หา/ดาวน์โหลด PostgreSQL แบบพกพามาไว้ในโฟลเดอร์ `.pg`
+(รันที่พอร์ต 5433 รับเฉพาะการเชื่อมต่อจากเครื่องตัวเอง ไม่ชนกับ PostgreSQL ตัวอื่นที่พอร์ต 5432), สร้างฐานข้อมูล,
+สร้าง `backend/.env` พร้อมค่า JWT แบบสุ่มของเครื่องนั้น, ติดตั้งแพ็กเกจ, ใส่ข้อมูลตัวอย่าง แล้วเปิดเบราว์เซอร์ที่ http://localhost:5173
+ครั้งต่อไปกด `start.bat` เปิดเร็วเลย ปิดฐานข้อมูลด้วย `stop-db.bat` บัญชีผู้ดูแลที่ seed ให้: `admin` / `Admin@1234`
+
+หลัง `git pull` ที่มีการแก้ฐานข้อมูล ให้รัน `npx prisma migrate deploy` ในโฟลเดอร์ `backend` เพิ่ม
+
+ถ้าดาวน์โหลด PostgreSQL แบบพกพาไม่ได้ ให้ติดตั้ง PostgreSQL ตามปกติ แล้วรัน `start.bat` ซ้ำ (สคริปต์ใช้แค่ไฟล์โปรแกรมของมัน ไม่ต้องรู้รหัสผ่าน)
+
+### ถ้าอยากใช้ PostgreSQL ที่ติดตั้งในเครื่องเอง (แบบเดิม)
+รัน `.\setup.bat` (จะถามรหัสผ่านของ user `postgres`) แล้วจึงรัน `.\start.bat` — ถ้ามี `backend/.env` อยู่แล้ว `start.bat` จะใช้ฐานข้อมูลตามไฟล์นั้น
 
 ## วิธีรันแบบเร็วที่สุด (1 คำสั่ง ได้ครบทุกอย่าง)
 
