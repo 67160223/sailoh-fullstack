@@ -30,7 +30,9 @@ export default defineConfig({
       },
       workbox: {
         // cache ป้ายรถ/หน้าค้นหาไว้ ให้เปิดซ้ำได้แม้ offline ตรงกับ opportunity "local storage / เปิดโปรแกรมได้ทันที"
-        globPatterns: ['**/*.{js,css,html,svg,png}']
+        globPatterns: ['**/*.{js,css,html,svg,png}'],
+        // อย่าให้ service worker เอา index.html ไปตอบแทนคำขอ API
+        navigateFallbackDenylist: [/^\/api\//]
       }
     })
   ],
