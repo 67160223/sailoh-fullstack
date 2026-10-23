@@ -1,0 +1,23 @@
+# Render Blueprint — สร้าง web service เดียว (backend เสิร์ฟหน้าเว็บด้วย) ต่อกับฐานข้อมูล Neon
+# ใช้งาน: Render → New → Blueprint → เลือก repo นี้ → ใส่ค่า DATABASE_URL (จาก Neon) ตอนที่มันถาม
+services:
+  - type: web
+    name: sailoh
+    runtime: node
+    plan: free
+    buildCommand: cd frontend && npm ci --include=dev && VITE_API_URL=/api/v1 npm run build && cd ../backend && npm ci --include=dev && npx prisma generate && npm run build
+    startCommand: cd backend && npx prisma migrate deploy && node dist/server.js
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.12.0
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_RESET_SECRET
+        generateValue: true
