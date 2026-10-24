@@ -17,7 +17,7 @@ const app = express()
 if (isProduction) app.set('trust proxy', Number(process.env.TRUST_PROXY || 1))
 
 // ปิด CSP ของ helmet เพราะหน้าเว็บโหลดแผนที่/ฟอนต์จากโดเมนภายนอก (OpenStreetMap/CartoDB) — header อื่นของ helmet ยังทำงานปกติ
-app.use(helmet({ contentSecurityPolicy: false }))
+app.use(helmet({ contentSecurityPolicy: false, referrerPolicy: { policy: 'strict-origin-when-cross-origin' } }))
 app.use(cors({ origin: env.corsOrigin.length ? env.corsOrigin : true, credentials: true }))
 app.use(morgan(env.nodeEnv === 'production' ? 'combined' : 'dev'))
 // จำกัด 3mb — พอสำหรับรูปโปรไฟล์ที่ frontend ย่อเป็น data URL แล้วก่อนส่ง (ปกติเล็กกว่านี้มาก)
