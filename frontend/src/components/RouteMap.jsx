@@ -120,6 +120,9 @@ export default function RouteMap({ stops = [], busPosition = null, nextStopId = 
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           subdomains="abc"
           maxZoom={19}
+          // OSM บล็อก (403 "Access blocked") คำขอ tile ที่ไม่มี Referer — บังคับให้รูป tile ส่ง Referer เสมอ
+          // ไม่ว่า header ของหน้าเว็บ (หรือ service worker ที่แคชหน้าเก่าไว้) จะตั้ง Referrer-Policy เป็นอะไร
+          referrerPolicy="strict-origin-when-cross-origin"
         />
 
         {/* เส้นทางสาย — ใช้ geometryPoints (เส้นตามถนนจริงจาก OSRM) ถ้ามี ไม่งั้น fallback ไปเส้นตรงต่อจุดป้าย */}
