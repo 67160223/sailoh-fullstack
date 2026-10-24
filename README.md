@@ -10,6 +10,7 @@ sailoh-fullstack/
 ├── start.bat            ← ดับเบิลคลิกอันเดียว ตั้งค่า + เปิดเว็บให้ครบ
 ├── stop-db.bat          ← ปิดฐานข้อมูลที่ start.bat เปิดไว้
 ├── scripts/             ← สคริปต์ช่วยของ start.bat (ฐานข้อมูลพกพา, สร้าง .env)
+├── render.yaml          ← ค่าตั้งต้นสำหรับ deploy ขึ้น Render (ดูหัวข้อ "เปิดเว็บออนไลน์")
 ├── backend/             ← เดิมคือ bus-tracking-api (TypeScript + Express + Prisma + PostgreSQL)
 └── frontend/            ← เดิมคือ final-bus-tracker (React + Vite)
 ```
@@ -36,6 +37,29 @@ cd sailoh-fullstack
 ถ้าดาวน์โหลด PostgreSQL แบบพกพาไม่ได้ ให้ติดตั้ง PostgreSQL ตามปกติ แล้วรัน `start.bat` ซ้ำ (สคริปต์ใช้แค่ไฟล์โปรแกรมของมัน ไม่ต้องรู้รหัสผ่าน)
 
 ถ้ามี `backend/.env` อยู่แล้ว (ชี้ไป PostgreSQL ของเครื่องเอง) `start.bat` จะใช้ฐานข้อมูลตามไฟล์นั้นและไม่สร้างฐานข้อมูลพกพา
+
+## เปิดเว็บออนไลน์ (ใช้ได้จากทุกเครื่อง ไม่ต้องติดตั้งอะไร)
+
+เว็บที่ deploy แล้ว: **ใส่ลิงก์ Render ของคุณตรงนี้** (เช่น `https://sailoh-xxxx.onrender.com`)
+
+ใช้บริการฟรี 2 ตัว: **Neon** (ฐานข้อมูล PostgreSQL) และ **Render** (backend ที่เสิร์ฟหน้าเว็บด้วยในตัวเดียว)
+GitHub Pages ใช้ไม่ได้เพราะโฮสต์ได้แต่ไฟล์ static ไม่รัน backend/ฐานข้อมูล
+
+1. สร้างโปรเจกต์บน Neon แล้วคัดลอก connection string (ปิด Connection pooling)
+2. สร้างตารางและข้อมูลตั้งต้นจากเครื่องตัวเอง:
+   ```powershell
+   cd backend
+   $env:DATABASE_URL = "connection string จาก Neon"
+   npx prisma migrate deploy
+   npx prisma db seed
+   npm run fetch:geometry
+   ```
+3. บน Render เลือก **New → Blueprint** แล้วเลือก repo นี้ (อ่านค่าจาก `render.yaml`) ใส่ `DATABASE_URL` ตอนที่ถาม
+   ส่วน JWT secret ทั้ง 3 ตัว Render สุ่มให้เอง
+4. ตรวจที่ `<ลิงก์>/api/v1/health` ต้องได้ `status: ok`
+
+ข้อควรรู้: Render แบบฟรีจะหลับเมื่อไม่มีคนใช้ประมาณ 15 นาที เปิดครั้งแรกอาจรอ 30–60 วินาที
+ถ้า rate limit ล็อกทุกคนพร้อมกัน ให้ตั้งตัวแปร `TRUST_PROXY` บน Render (ลอง `2`)
 
 ## Flow การใช้งาน
 
@@ -109,12 +133,17 @@ ForgotPassword/Profile/AdminUsers/AdminUserDetail ครบ
 ไม่ใช่ข้อมูลบัญชี ทั้งแอปใช้ CSS custom properties (`--bg`, `--surface`, `--text` ฯลฯ ใน
 `frontend/src/index.css`) จึงสลับสีทั้งแอปพร้อมกันได้จากจุดเดียว ไม่ต้องแก้ทีละ component
 
-## หมายเหตุด้านความปลอดภัยก่อนขึ้น production
+## หมายเหตุด้านความปลอดภัย
 
-- เปลี่ยน `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` / `JWT_RESET_SECRET` เป็นค่าสุ่มยาว ๆ ของจริง
-- จำกัด `CORS_ORIGIN` ใน `backend/.env` ให้เป็นโดเมน frontend จริงเท่านั้น
-- เพิ่ม rate limiting ที่ `/auth/login`, `/auth/register` กัน brute-force
-- `forgot-password` คืน `resetToken` ตรงใน response เพราะโปรเจกต์นี้ไม่มีระบบส่งอีเมล — ของจริงต้อง
-  ส่งทางอีเมลเท่านั้น
+ทำแล้ว:
+- `start.bat` สุ่ม `JWT_*_SECRET` ใหม่ให้ทุกเครื่อง และ Render สุ่มให้เองตอน deploy
+- `POST /auth/login` จำกัด 5 ครั้งที่ล็อกอินไม่สำเร็จต่อ 15 นาทีต่อ IP และ `/auth/register` 10 ครั้งต่อชั่วโมง
+- ช่องโหว่ของแพ็กเกจ npm ทั้ง backend และ frontend แก้แล้ว (`npm audit` = 0)
+
+ข้อจำกัดที่รู้อยู่ (โปรเจกต์นี้ไม่มีระบบส่งอีเมล):
+- `forgot-password` ยืนยันด้วย username + อีเมล แล้วคืน `resetToken` ตรงใน response — ของจริงต้องส่งทางอีเมลเท่านั้น
+  ผลคือถ้ารู้ username กับอีเมลของบัญชีไหน ก็รีเซ็ตรหัสบัญชีนั้นได้ ข้อมูล seed (`admin` / `admin@sailoh.local` / `Admin@1234`)
+  อยู่ใน repo ที่เป็น public **บนเว็บออนไลน์ให้เปลี่ยนทั้งรหัสผ่านและอีเมลของ admin หลังล็อกอินครั้งแรก**
+- ตอนใช้ Render หน้าเว็บกับ API อยู่โดเมนเดียวกัน จึงไม่ต้องตั้ง `CORS_ORIGIN` และปิด CSP ของ helmet ไว้ เพราะแผนที่โหลดจากโดเมนภายนอก
 - `avatarUrl` เก็บเป็น data URL (base64) ตรงในฐานข้อมูล เพื่อความง่าย — ของจริงควรใช้ object storage
   (S3, Cloudinary ฯลฯ) แล้วเก็บแค่ URL แทน
